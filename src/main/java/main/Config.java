@@ -12,6 +12,7 @@ public class Config {
 
     public String token;
     public String ownerId;
+    public String proxyToken;
 
     public Config() throws Exception {
         File file = new File (Utils.getJarContainingFolder(Guill.class) + "/config.json");
@@ -21,11 +22,13 @@ public class Config {
             JSONObject config = (JSONObject) parser.parse(new FileReader(file));
             token = (String) config.get("Token");
             ownerId = (String) config.get("OwnerId");
+            proxyToken = (String) config.get("ProxyToken");
         } else {
             FileWriter fileWriter = new FileWriter(file);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("Token", null);
-            jsonObject.put("Owner_Id", null);
+            jsonObject.put("OwnerId", null);
+            jsonObject.put("ProxyToken", null);
 
             fileWriter.write(jsonObject.toJSONString());
             fileWriter.close();
