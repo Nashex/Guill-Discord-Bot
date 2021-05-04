@@ -1,6 +1,8 @@
 package main;
 
 import listeners.CommandListener;
+import listeners.MiscListener;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -9,8 +11,19 @@ import javax.security.auth.login.LoginException;
 
 public class Guill {
 
+    public static Config config;
+    public static JDA jda;
+
     public static void main(String[] args) {
-        JDABuilder builder = JDABuilder.create("ODM4OTQ1MjM3Mzc1NjQ3Nzc1.YJCeow.65Y3VuVdlehYMC9-y29WXOJrdx0",
+
+        try {
+            config = new Config();
+        } catch (Exception e) {
+            System.out.println("Failed to Start Bot, Config Invalid");
+            e.printStackTrace();
+        }
+
+        JDABuilder builder = JDABuilder.create(config.token,
                 GatewayIntent.GUILD_BANS,
                 GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                 GatewayIntent.GUILD_EMOJIS,
@@ -26,15 +39,21 @@ public class Guill {
 
         builder.setAutoReconnect(true);
 
+        addEventListeners(builder);
+
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.addEventListeners(new CommandListener());
+
 
         try {
-            builder.build();
+            jda = builder.build();
         } catch (LoginException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void addEventListeners(JDABuilder builder) {
+        builder.addEventListeners(new CommandListener());
+        builder.addEventListeners(new MiscListener());
     }
 
 }
